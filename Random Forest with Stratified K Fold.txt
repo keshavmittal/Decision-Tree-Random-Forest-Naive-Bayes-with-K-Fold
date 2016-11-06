@@ -1,0 +1,47 @@
+from pandas import Series, DataFrame
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pylab as plt
+from sklearn.cross_validation import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report
+import sklearn.metrics
+
+os.chdir("C:\\Users\Keshav\Desktop")
+
+
+#Load the dataset
+
+Satellite_data = pd.read_csv("satellite.csv")
+
+
+"""
+Modeling and Prediction
+"""
+#Split into training and testing sets
+
+Predictor_Variable = Satellite_data[['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10','F11','F12','F13','F14','F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36']]
+
+Target_variable = Satellite_data.Target
+
+
+
+#Build model on training data
+from sklearn.ensemble import RandomForestClassifier
+classifier=RandomForestClassifier(n_estimators=30)
+
+#Using Stratified Function
+
+from sklearn.cross_validation import cross_val_score
+Scores = cross_val_score(estimator= classifier,     # Model to test
+                X= Predictor_Variable, 
+                y = Target_variable,      # Target variable
+                scoring = "accuracy",               # Scoring metric   
+ 
+                cv=10)  
+
+print("Accuracy per fold: ", Scores, "\n")
+print("Average accuracy: ", Scores.mean())	
+import statistics
+print("Standard Deviation:" ,statistics.stdev(Scores))

@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 24 09:37:11 2016
+
+@author: Keshav
+"""
+
+from pandas import Series, DataFrame
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pylab as plt
+from sklearn.cross_validation import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report
+import sklearn.metrics
+
+os.chdir("C:\\Users\Keshav\Desktop")
+
+
+#Load the dataset
+
+Satellite_data = pd.read_csv("satellite.csv")
+
+
+"""
+Modeling and Prediction
+"""
+#Split into training and testing sets
+
+Predictor_Variable = Satellite_data[['F1', 'F2', 'F3', 'F4', 'F5', 
+'F6', 'F7', 'F8', 'F9', 'F10', 
+'F11','F12','F13','F14','F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36']]
+Target_variable = Satellite_data.Target
+
+
+
+#Build model on training data
+from sklearn.ensemble import RandomForestClassifier
+classifier=RandomForestClassifier(n_estimators=30)
+
+#Creating K Fold Function and going through Loop
+
+from sklearn.cross_validation import KFold
+
+cv = KFold(n=len(Satellite_data),  # Number of elements
+           n_folds=10,            # Desired number of cv folds
+           random_state=12)       # Set a random seed
+		   
+fold_accuracy = []
+
+
+for train_fold, valid_fold in cv:
+    train = Satellite_data.loc[train_fold] # Extract train data with cv indices
+    valid = Satellite_data.loc[valid_fold] # Extract valid data with cv indices
+    model = classifier.fit(X = train[['F1', 'F2', 'F3', 'F4', 'F5', 
+'F6', 'F7', 'F8', 'F9', 'F10', 
+'F11','F12','F13','F14','F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36']], y = train['Target'])
+    valid_acc = model.score(X = valid[['F1', 'F2', 'F3', 'F4', 'F5', 
+'F6', 'F7', 'F8', 'F9', 'F10', 
+'F11','F12','F13','F14','F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36']], y = valid['Target'])
+    fold_accuracy.append(valid_acc)    
+
+print("Accuracy per fold: ", fold_accuracy, "\n")
+print("Average accuracy: ", sum(fold_accuracy)/len(fold_accuracy))	
+import statistics
+print("Standard Deviation:" , statistics.stdev(fold_accuracy))

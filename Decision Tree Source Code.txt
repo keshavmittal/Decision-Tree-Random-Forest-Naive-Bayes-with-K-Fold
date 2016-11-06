@@ -1,0 +1,60 @@
+from pandas import Series, DataFrame
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pylab as plt
+from sklearn.cross_validation import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report
+import sklearn.metrics
+
+os.chdir("C:\\Users\Keshav\Desktop")
+
+
+#Load the dataset
+
+Satellite_data = pd.read_csv("satellite.csv")
+
+
+"""
+Modeling and Prediction
+"""
+#Split into training and testing sets
+
+Predictor_Variable = Satellite_data[['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11','F12','F13','F14','F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36']]
+
+Target_variable = Satellite_data.Target
+
+pred_train, pred_test, tar_train, tar_test  =   train_test_split(Predictor_Variable, Target_variable, test_size=.3)
+
+
+#Build model on training data
+classifier=DecisionTreeClassifier()
+
+classifier=classifier.fit(pred_train,tar_train)
+
+
+predictions_train = classifier.predict(pred_train)
+predictions_test = classifier.predict(pred_test)
+
+
+print("Confusion Matrix on Trained Data", sklearn.metrics.confusion_matrix(tar_train,predictions_train))
+print("Confusion Matrix on Test Data", sklearn.metrics.confusion_matrix(tar_test,predictions_test))
+
+print("Accuracy of Trained Data", sklearn.metrics.accuracy_score(tar_train, predictions_train))
+print("Accuracy of Test Data", sklearn.metrics.accuracy_score(tar_test, predictions_test))
+
+#Displaying the decision tree
+from sklearn import tree
+
+#from StringIO import StringIO
+from io import StringIO
+
+#from StringIO import StringIO 
+from IPython.display import Image
+
+out = StringIO()
+tree.export_graphviz(classifier, out_file=out)
+import pydotplus
+graph=pydotplus.graph_from_dot_data(out.getvalue())
+graph.write_png("Visualize.png")
