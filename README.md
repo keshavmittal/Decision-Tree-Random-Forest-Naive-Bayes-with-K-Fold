@@ -2,7 +2,7 @@
 
 This repository contains Decision tree , Random Forest and naive bayes classifiers with split data and K fold.
 
-Repository contains code for following trees:
+Repository contains code for following classifier:
 
 1. Decision Tree Source Code
 2. Naive Bayes Source Code with Stratified K fold
